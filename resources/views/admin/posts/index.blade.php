@@ -15,6 +15,11 @@
             <li>Autore: {{$element->author}}</li>
             <li>Slug: {{$element->slug}}</li>
             <li>Categoria: {{$element->category? $element->category->name: '-'}}</li>
+            <li>Tag:
+                @foreach ($element->tags as $tag)
+                    {{$tag->name ? $tag->name : '-'}}
+                @endforeach
+            </li>
         </ul>
         <button>
             <a href="{{ route('admin.posts.show', $element->id)}}">

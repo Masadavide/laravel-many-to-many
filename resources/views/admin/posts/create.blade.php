@@ -49,6 +49,23 @@
                     @enderror
                 </div>
             </li>
+            <li>
+                <div class="form-check">
+                    Tag:
+                    <br>
+                    @foreach($tags as $element)
+                        <input class="form-check-input" type="checkbox" id="{{$element->slug}}" value="{{$element->id}}" name="tags[]">
+                        <label class="form-check-label" for="{{$element->slug}}"
+                            {{$element->id == old('tag_id') ? 'selected' : ''}}>
+                            {{$element->name}}
+                        </label>
+                        <br>
+                        @error('tag_id')
+                            <div class="alert alert-danger">{{ $message }}</div>
+                        @enderror
+                    @endforeach
+                </div>
+            </li>
             <button type="submit" class="btn btn-primary">Crea</button>
         </ul>
     </form> 

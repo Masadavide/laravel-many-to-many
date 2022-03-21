@@ -10,6 +10,7 @@ use Illuminate\Validation\Rule;
 
 use App\Post;
 use App\Category;
+use App\Tag;
 
 class PostController extends Controller
 {
@@ -21,7 +22,9 @@ class PostController extends Controller
     public function index()
     {
         $posts = Post::all();
-        return view('admin.posts.index', compact('posts'));
+        $tags = Tag::all();
+
+        return view('admin.posts.index', compact('posts', 'tags'));
     }
 
     /**
@@ -32,7 +35,9 @@ class PostController extends Controller
     public function create()
     {
         $categories = Category::all();
-        return view('admin.posts.create', compact('categories'));
+        $tags = Tag::all();
+
+        return view('admin.posts.create', compact('categories', 'tags'));
     }
 
     /**
@@ -47,6 +52,7 @@ class PostController extends Controller
             'title' => 'required|string|max:50',
             'author' => 'required|string|max:50',
             'content' => 'required|string|unique:posts',
+            'tag_id' => 'nullable',
         ]);
 
         $form_data = $request->all();
@@ -65,6 +71,9 @@ class PostController extends Controller
         $newPost = new Post();
 
         $newPost = Post::create($form_data);
+
+        $newPost->tags()->sync($form_data['tags']);
+
         return redirect()->route('admin.posts.show', $newPost->id);
     }
 
@@ -88,7 +97,9 @@ class PostController extends Controller
     public function edit(Post $post)
     {
         $categories = Category::all();
-        return view('admin.posts.edit', compact('post', 'categories'));
+        $tags = Tag::all();
+
+        return view('admin.posts.edit', compact('post', 'categories', 'tags'));
     }
 
     /**
@@ -126,6 +137,8 @@ class PostController extends Controller
 
 
         $post->update($form_data);
+
+        $post->tags()->sync($form_data['tags']) ? $form_data['tags'] : '';
 
         return redirect()->route('admin.posts.show', $post->id);  
     }
